@@ -1,16 +1,24 @@
 #include <stdio.h>
 #include "alerts.h"
+#include <ctype.h>
 
+/* Define true and false to be the values 1 and 0, respectively. */
 #define true  1
 #define false 0
- 
-int isBinary(File * file);
+
+/* Name: Demetrios Lambropoulos
+   Date: Monday, February 1, 2016
+  
+   */
+
+int isBinary(FILE * file);
 
 int main(int argc, char ** argv)
 {
 	/* Check if the minimum required amount of arguments have been supplied. */
 	if (argc < 3)
 	{
+		/* Inform the user that not enough arguments have been provided.  */
 		error("Not enough arguments.");
 		return 0;
 	}
@@ -18,20 +26,35 @@ int main(int argc, char ** argv)
 	{
 		/* Open the requested file. */
 		FILE * file = fopen(argv[1], "r");
+		
+		/* Indicates the number of substrings to search for. */
+		int i = argc - 2;
+		
+		/* Indicates the current substring argument. */
+		int cur = 2;
 
-		/* Check that the requested file is existing */
+		/* Check that the requested file is existing. */
 		if (file != NULL)
 		{
 			/* Check if the file is a binary. */
 			if(isBinary(file))
 			{
+				/* Provide a warning to the user that this might cause errors. */
 				warning("File is a binary. Might result with incorrect results.");
 			}			
-
-			/* Set the file position indicator for the stream  pointed to by file
-			   to the beginning of the file. */
-			fseek(file, 0L, SEEK_SET);	
-
+			
+			while(i != 0)
+			{
+				char * c = argv[cur];
+				
+				/* Set the file position indicator for the stream  pointed to by file
+			   	to the beginning of the file. */
+				fseek(file, 0L, SEEK_SET);
+				
+				/* Go to the next argument. */
+				i--;
+				cur++;
+			}
 			/* Close the file when finished. */
 			fclose(file);
 			return 0;
@@ -45,7 +68,24 @@ int main(int argc, char ** argv)
 	}
 }
 
-int isBinary(File * file)
+/* Checks if the file is a binary */
+int isBinary(FILE * file)
 {
-	return true;
+	int binary = false;
+	int ch;
+
+	while((ch = fgetc(file)) != EOF)
+	{	
+		if(isprint(ch) == 0 && (char) ch != '\n' && (char) ch != '\t' && (char) ch != '\v' && (char) ch != '\n' && (char) ch != '\f' && (char) ch != '\b' && (char) ch != '\r' && (char) ch != '\'' && (char) ch != '\\' && (char) ch != '\"' && (char) ch != '\a') 
+		{
+			binary = true;
+			break;
+		}
+	}
+	
+	/* Set the file position indicator for the stream  pointed to by file
+           to the beginning of the file. */
+        fseek(file, 0L, SEEK_SET);
+
+	return binary;
 }
