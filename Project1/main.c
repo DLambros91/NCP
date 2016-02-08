@@ -49,23 +49,19 @@ int main(int argc, char ** argv)
 				char * substring = argv[cur];
 				
 				int size = strlen(substring);
-				int j;
 				char c[size];
-				for ( j = 0; j < size; j++)
-				{
-					(char) c[j] = "";
-				}
 				int matches = 0;
-
+				int cursor = 1;
 				while (fgets(c, size + 1, file) != NULL)
 				{
-					fprintf(stderr, "MERP\n");
 					if (strcmp(c, substring) == 0)
 					{
 						matches++;
 					}
+					fseek(file, cursor, SEEK_SET);
+					cursor++;
 				}
-
+				printf("%d\n", matches);
 				/* Set the file position indicator for the stream  pointed to by file
 			   	to the beginning of the file. */
 				fseek(file, 0L, SEEK_SET);
