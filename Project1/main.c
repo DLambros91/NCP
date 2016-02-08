@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "alerts.h"
+#include <string.h>
 #include <ctype.h>
 
 /* Define true and false to be the values 1 and 0, respectively. */
@@ -15,7 +16,7 @@ int isBinary(FILE * file);
 
 int main(int argc, char ** argv)
 {
-	/* Check if the minimum required amount of arguments have been supplied. */
+	/* Check if the minimum require3 amount of arguments hav3 been supplied. */
 	if (argc < 3)
 	{
 		/* Inform the user that not enough arguments have been provided.  */
@@ -45,8 +46,26 @@ int main(int argc, char ** argv)
 			
 			while(i != 0)
 			{
-				char * c = argv[cur];
+				char * substring = argv[cur];
 				
+				int size = strlen(substring);
+				int j;
+				char c[size];
+				for ( j = 0; j < size; j++)
+				{
+					(char) c[j] = "";
+				}
+				int matches = 0;
+
+				while (fgets(c, size + 1, file) != NULL)
+				{
+					fprintf(stderr, "MERP\n");
+					if (strcmp(c, substring) == 0)
+					{
+						matches++;
+					}
+				}
+
 				/* Set the file position indicator for the stream  pointed to by file
 			   	to the beginning of the file. */
 				fseek(file, 0L, SEEK_SET);
