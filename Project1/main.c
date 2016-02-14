@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <strings.h>
+#include <stdlib.h>
 
 /* Define true and false to be the values 1 and 0, respectively. */
 #define true  1
@@ -44,8 +45,9 @@ int main(int argc, char ** argv)
 			/* Check that the requested file is existing. */
 			if (file != -1)
 			{
-				off_t fsize = lseek(file, 0, SEEK_END);			
-				while(i != 0)
+				off_t fsize = lseek(file, 0, SEEK_END);
+				lseek(file, 0, SEEK_SET);		
+				/*while(i != 0)
 				{
 					char * substring = argv[cur];
 
@@ -53,7 +55,7 @@ int main(int argc, char ** argv)
 					char c[size];
 					int matches = 0;
 					int cursor = 1;
-
+					off_t curoffset = 0;
 					while(read(file, c, size) != 0)
 					{
 						if (strcasecmp(c, substring) == 0)
@@ -62,12 +64,52 @@ int main(int argc, char ** argv)
 						}
 						lseek(file, cursor, SEEK_SET);
 						cursor++;
+						curoffset += size;
+						if ((curoffset + size) > fsize)
+						{
+							size = (int) (fsize - curoffset);
+						}
 					}
 					printf("%d\n", matches);
 					close(file);
 					file = open(argv[2], O_RDONLY);
 					i--;
 					cur++;
+				}*/
+				while (i != 0)
+				{
+					char * substring = argv[cur];
+					int size = strlen(substring);
+					char * c = (char *) calloc(size, sizeof(char *));
+					int matches = 0;
+					int cursor = 1;
+					int j;
+						
+					while((lseek(file, 0, SEEK_CUR)  != fsize))
+					{
+						//printf("Current Offset = %ld\n", curoffset);
+						for (j = 0; j < size; j++)
+						{
+							if (lseek(file, 0, SEEK_CUR) != fsize)
+							{
+								read(file, &c[j], 1);
+							}
+						}
+					//	char * x = strtok(c, " ");
+					//	char * y = strtok(substring, " ");
+						
+						if (strcasecmp(c, substring) == 0)
+						{
+							matches++;
+						}
+						lseek(file, cursor, SEEK_SET);
+						cursor++;
+					}
+					printf("%d\n", matches);
+					i--;
+					cur++;
+					lseek(file, 0L, SEEK_SET);
+					free(c);
 				}
 				close(file);
 				return 0;
