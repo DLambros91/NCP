@@ -116,7 +116,8 @@ int main(int argc, char ** argv)
 			}
 			else
 			{
-				error("File does not exist");
+//				fprintf(stderr, "%s: No such file or directory\n", argv[1]);
+				//error("File does not exist");
 				perror(argv[0]);
 			}
 		}
@@ -174,8 +175,10 @@ int main(int argc, char ** argv)
 			else
 			{
 				/* Inform the user that the file does not exist. */
-				error("File does not exist");
-				return 0;
+				//error("File does not exist");
+				//return 0;
+//				fprintf(stderr, "%s: No such file or directory\n", argv[1]);
+				perror(argv[0]);
 			}
 		}
 	}
