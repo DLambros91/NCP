@@ -2,6 +2,7 @@
 #include "alerts.h"
 #include <string.h>
 #include <ctype.h>
+#include <strings.h>
 
 /* Define true and false to be the values 1 and 0, respectively. */
 #define true  1
@@ -21,6 +22,8 @@ int main(int argc, char ** argv)
 	{
 		/* Inform the user that not enough arguments have been provided.  */
 		error("Not enough arguments.");
+	
+		/* Exit the program */
 		return 0;
 	}
 	else
@@ -44,24 +47,44 @@ int main(int argc, char ** argv)
 				warning("File is a binary. Might result with incorrect results.");
 			}			
 			
+			/* While there is still more substrings. Search for occurrances. */
 			while(i != 0)
 			{
+				/* Current substring to look for. */
 				char * substring = argv[cur];
 				
+				/* Size of the substring. */
 				int size = strlen(substring);
+
+				/* Chunk of file equal to the length of the substring. */
 				char c[size];
+
+				/* The amount of matches that were detected. */
 				int matches = 0;
+
+				/* Current cursor in the file */
 				int cursor = 1;
+
+				/* While the file is not EOF, continue looking for matches. */
 				while (fgets(c, size + 1, file) != NULL)
 				{
-					if (strcmp(c, substring) == 0)
+					/* Compare if the two character arrays match, disregarding case. */
+					if (strcasecmp(c, substring) == 0)
 					{
+						/* Increment the amount of matches. */
 						matches++;
 					}
+				
+					/* Set the offset of the beginning of the file equal to cursor. */
 					fseek(file, cursor, SEEK_SET);
+
+					/* Increment the value of cursor. */
 					cursor++;
 				}
+				
+				/* Display the amount of matches to the user. */	
 				printf("%d\n", matches);
+
 				/* Set the file position indicator for the stream  pointed to by file
 			   	to the beginning of the file. */
 				fseek(file, 0L, SEEK_SET);
@@ -70,14 +93,19 @@ int main(int argc, char ** argv)
 				i--;
 				cur++;
 			}
+
 			/* Close the file when finished. */
 			fclose(file);
+
+			/* Terminate the program. */
 			return 0;
 		}
 		else
 		{
 			/* Inform the user that the file does not exist. */
 			error("File does not exist");
+
+			/* Terminate the program. */
 			return 0;
 		}
 	}
